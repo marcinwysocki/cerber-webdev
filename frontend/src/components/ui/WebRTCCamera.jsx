@@ -19,6 +19,7 @@ const WebRTCCamera = ({ title, streamPath }) => {
     useEffect(() => {
         // Ten sam origin co aplikacja: reverse proxy kieruje /video/* do MediaMTX (w dev: proxy Vite).
         const whepUrl = `/${streamPath}/whep`;
+        const video = videoRef.current;
         let pc = null;
         let sessionUrl = null;
         let timer = null;
@@ -58,8 +59,8 @@ const WebRTCCamera = ({ title, streamPath }) => {
             current.addTransceiver('video', { direction: 'recvonly' });
 
             current.ontrack = (event) => {
-                if (videoRef.current && event.streams[0]) {
-                    videoRef.current.srcObject = event.streams[0];
+                if (video && event.streams[0]) {
+                    video.srcObject = event.streams[0];
                 }
             };
 
@@ -105,7 +106,7 @@ const WebRTCCamera = ({ title, streamPath }) => {
             stopped = true;
             clearTimeout(timer);
             closePeer();
-            if (videoRef.current) videoRef.current.srcObject = null;
+            if (video) video.srcObject = null;
         };
     }, [streamPath]);
 
