@@ -1,13 +1,24 @@
-protocols: [udp]
+# MediaMTX: wejscie SRT od robota (tylko przez VPN), wyjscie WebRTC/WHEP dla przegladarek (za reverse proxy).
+# Nieuzywane protokoly wylaczone, zeby kontener nie nasluchiwal na zbednych portach.
+rtsp: no
+rtmp: no
+hls: no
+
 webrtc: yes
 webrtcAddress: :8889
+# ICE: MediaMTX oglasza klientom port, na ktorym sam nasluchuje, wiec w docker-compose musi byc
+# zmapowany 1:1 (ten sam numer w kontenerze i na hoscie). Wartosc nadpisuje .env przez
+# MTX_WEBRTCLOCALUDPADDRESS / MTX_WEBRTCLOCALTCPADDRESS (patrz docker-compose.yml).
+webrtcLocalUDPAddress: :8189
 webrtcLocalTCPAddress: :8189
 webrtcIPsFromInterfaces: yes
-webrtcAdditionalHosts:
-  - 10.13.13.1
+# Adresy, pod ktorymi przegladarki widza serwer (publiczne IP / nazwa). Ustawiane w .env przez
+# MTX_WEBRTCADDITIONALHOSTS (lista po przecinku), zeby adresy infrastruktury nie siedzialy w repo.
+webrtcAdditionalHosts: []
 
 srt: yes
 srtAddress: :8890
+
 paths:
   video/normal_cam:
     source: publisher

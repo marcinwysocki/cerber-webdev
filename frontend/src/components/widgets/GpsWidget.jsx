@@ -15,7 +15,8 @@ const GpsWidget = () => {
     useEffect(() => {
         const fetchGpsData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/v1/gps/data');
+                // Ten sam origin co aplikacja: reverse proxy kieruje /api/* do backendu (w dev: proxy Vite).
+                const response = await fetch('/api/v1/mqtt/gps');
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }

@@ -11,13 +11,18 @@ plugins: [react()],
     include: ['react-grid-layout', 'roslib']
   },
   server: {
+    // W produkcji /api/* i /video/* obsluguje reverse proxy na tym samym origin.
+    // W dev Vite udaje to proxy; cele mozna nadpisac zmiennymi srodowiskowymi.
     proxy: {
-      // Whenever the app requests /video/..., forward it to this target
-      '/video': {
-        target: 'http://10.13.13.1',
+      '/api': {
+        target: process.env.DEV_API_TARGET || 'http://localhost:3000',
         changeOrigin: true,
-        secure: false, 
-      }
-    }
-  }
+      },
+      '/video': {
+        target: process.env.DEV_VIDEO_TARGET || 'http://localhost:8889',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })

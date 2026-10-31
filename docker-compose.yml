@@ -5,7 +5,14 @@ services:
     ports:
       - ${SRT_PORT}:8890/udp
       - ${WEBRTC_PORT}:8889
-      - ${STREAM_PORT}:8189
+      # ICE 1:1 (UDP i TCP): MediaMTX oglasza klientom port, na ktorym nasluchuje
+      - ${STREAM_PORT}:${STREAM_PORT}/udp
+      - ${STREAM_PORT}:${STREAM_PORT}/tcp
+    environment:
+      - MTX_WEBRTCLOCALUDPADDRESS=:${STREAM_PORT}
+      - MTX_WEBRTCLOCALTCPADDRESS=:${STREAM_PORT}
+      # publiczny adres (IP lub nazwa) serwera dla kandydatow ICE; lista po przecinku
+      - MTX_WEBRTCADDITIONALHOSTS=${WEBRTC_ADDITIONAL_HOSTS}
     volumes:
       - ./server/mediamtx.yml:/mediamtx.yml
     restart: always

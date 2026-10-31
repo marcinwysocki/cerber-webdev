@@ -6,7 +6,8 @@ const WebRTCCamera = ({ title, streamPath }) => {
     const peerConnection = useRef(null);
 
     useEffect(() => {
-        const whepUrl = `https://10.13.13.1/${streamPath}/whep`;
+        // Ten sam origin co aplikacja: reverse proxy kieruje /video/* do MediaMTX (w dev: proxy Vite).
+        const whepUrl = `/${streamPath}/whep`;
 
         const startStream = async () => {
             peerConnection.current = new RTCPeerConnection();
