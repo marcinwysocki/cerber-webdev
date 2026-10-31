@@ -1,0 +1,28 @@
+{
+  "$defs": {
+    "PtzState": {
+      "enum": [
+        "MOVING",
+        "WAITING",
+        "DISCONNECTED",
+        "UNKNOWN"
+      ],
+      "title": "PtzState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Z /ptz/status (std_msgs/String), zdekodowany. IP glowicy (adres w sieci\nrobota) jest pomijane - nie wystawiamy go publicznie.",
+  "properties": {
+    "state": {
+      "$ref": "#/$defs/PtzState"
+    }
+  },
+  "required": [
+    "state"
+  ],
+  "title": "Ptz",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/Ptz.json"
+}

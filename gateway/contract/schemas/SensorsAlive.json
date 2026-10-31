@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "description": "Z /sensor_status/*_isalive (std_msgs/Bool).",
+  "properties": {
+    "imu": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Imu"
+    },
+    "odom": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Odom"
+    },
+    "joints": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Joints"
+    },
+    "realsense": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Realsense"
+    },
+    "lidar": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lidar"
+    },
+    "ultrasound": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Ultrasound"
+    }
+  },
+  "title": "SensorsAlive",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/SensorsAlive.json"
+}

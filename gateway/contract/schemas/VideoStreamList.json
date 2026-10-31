@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "VideoStream": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "examples": [
+            "normal_cam",
+            "IR_cam"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "path": {
+          "description": "Sciezka MediaMTX",
+          "examples": [
+            "video/normal_cam"
+          ],
+          "title": "Path",
+          "type": "string"
+        },
+        "whep_url": {
+          "description": "POST SDP offer tutaj (Content-Type: application/sdp). Bezwzgledny, gdy ustawiono MEDIAMTX_BASE; inaczej sciezka wzgledna na tym samym hoscie co API",
+          "title": "Whep Url",
+          "type": "string"
+        },
+        "codec": {
+          "default": "H264",
+          "title": "Codec",
+          "type": "string"
+        },
+        "vpn_only": {
+          "default": true,
+          "description": "True, gdy proxy/firewall ogranicza /video do VPN (STREAMS_VPN_ONLY); flaga z konfiguracji, nie stan sieci",
+          "title": "Vpn Only",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "path",
+        "whep_url"
+      ],
+      "title": "VideoStream",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "streams": {
+      "items": {
+        "$ref": "#/$defs/VideoStream"
+      },
+      "title": "Streams",
+      "type": "array"
+    }
+  },
+  "required": [
+    "streams"
+  ],
+  "title": "VideoStreamList",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/VideoStreamList.json"
+}

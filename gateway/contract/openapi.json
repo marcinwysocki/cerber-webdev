@@ -1,0 +1,1525 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Cerber Telemetry Gateway",
+    "description": "Publiczne, read-only API telemetrii robota Cerber (DEEP Robotics Lite3). Dane pochodza z ROS 2 (rosbridge) i MQTT po stronie VPN. Sterowanie robotem nie jest wystawione. Autoryzacja: naglowek `X-API-Key` (REST) lub query `api_key` (WebSocket).",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "system"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/robots": {
+      "get": {
+        "tags": [
+          "robots"
+        ],
+        "summary": "List Robots",
+        "operationId": "list_robots_api_v1_robots_get",
+        "parameters": [
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RobotList"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ]
+      }
+    },
+    "/api/v1/robots/{robot_id}": {
+      "get": {
+        "tags": [
+          "robots"
+        ],
+        "summary": "Get Robot Summary",
+        "operationId": "get_robot_summary_api_v1_robots__robot_id__get",
+        "parameters": [
+          {
+            "name": "robot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Robot Id"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RobotSummary"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ]
+      }
+    },
+    "/api/v1/robots/{robot_id}/telemetry/latest": {
+      "get": {
+        "tags": [
+          "telemetry"
+        ],
+        "summary": "Ostatni znany stan robota (wszystkie sekcje)",
+        "operationId": "telemetry_latest_api_v1_robots__robot_id__telemetry_latest_get",
+        "parameters": [
+          {
+            "name": "robot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Robot Id"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TelemetrySnapshot"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ]
+      }
+    },
+    "/api/v1/robots/{robot_id}/gps/latest": {
+      "get": {
+        "tags": [
+          "telemetry"
+        ],
+        "summary": "Gps Latest",
+        "operationId": "gps_latest_api_v1_robots__robot_id__gps_latest_get",
+        "parameters": [
+          {
+            "name": "robot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Robot Id"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GPSFix"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ]
+      }
+    },
+    "/api/v1/robots/{robot_id}/streams": {
+      "get": {
+        "tags": [
+          "video"
+        ],
+        "summary": "Strumienie wideo (WHEP, tylko z VPN)",
+        "operationId": "streams_api_v1_robots__robot_id__streams_get",
+        "parameters": [
+          {
+            "name": "robot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Robot Id"
+            }
+          },
+          {
+            "name": "X-API-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VideoStreamList"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Unauthorized"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKey": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "Error"
+      },
+      "GPSFix": {
+        "properties": {
+          "time": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time",
+            "description": "Czas fixu z odbiornika, UTC"
+          },
+          "latitude": {
+            "type": "number",
+            "title": "Latitude",
+            "description": "Szerokosc [deg]"
+          },
+          "longitude": {
+            "type": "number",
+            "title": "Longitude",
+            "description": "Dlugosc [deg]"
+          },
+          "altitude": {
+            "type": "number",
+            "title": "Altitude",
+            "description": "Wysokosc [m n.p.m.]"
+          },
+          "satellites": {
+            "type": "integer",
+            "maximum": 255.0,
+            "minimum": 0.0,
+            "title": "Satellites"
+          },
+          "fix_quality": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Fix Quality",
+            "description": "NMEA GGA: 0 brak fixu, 1 GPS, 2 DGPS, 4 RTK fix, 5 RTK float"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "latitude",
+          "longitude",
+          "altitude",
+          "satellites",
+          "fix_quality"
+        ],
+        "title": "GPSFix",
+        "description": "Z MQTT cerber/gps/data."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded"
+            ],
+            "title": "Status"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "default": "1.0.0"
+          },
+          "rosbridge_connected": {
+            "type": "boolean",
+            "title": "Rosbridge Connected"
+          },
+          "mqtt_connected": {
+            "type": "boolean",
+            "title": "Mqtt Connected"
+          },
+          "ts": {
+            "type": "number",
+            "title": "Ts"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "rosbridge_connected",
+          "mqtt_connected",
+          "ts"
+        ],
+        "title": "Health"
+      },
+      "Imu": {
+        "properties": {
+          "orientation": {
+            "$ref": "#/components/schemas/Quaternion",
+            "description": "Orientacja z IMU (kwaternion z RPY motion hosta), frame_id=base_link"
+          },
+          "roll": {
+            "type": "number",
+            "title": "Roll",
+            "description": "Przechyl [rad], wyliczony z orientation"
+          },
+          "pitch": {
+            "type": "number",
+            "title": "Pitch",
+            "description": "Pochylenie [rad]"
+          },
+          "yaw": {
+            "type": "number",
+            "title": "Yaw",
+            "description": "Odchylenie [rad]"
+          },
+          "angular_velocity": {
+            "$ref": "#/components/schemas/Vec3",
+            "description": "Predkosc katowa; rad/s wg konwencji sensor_msgs/Imu - stockowy node przekazuje surowe wartosci z UDP bez konwersji, jednostka do potwierdzenia na robocie"
+          },
+          "linear_acceleration": {
+            "$ref": "#/components/schemas/Vec3",
+            "description": "Przyspieszenie liniowe; m/s^2 wg konwencji sensor_msgs/Imu, surowe z UDP, do potwierdzenia"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "orientation",
+          "roll",
+          "pitch",
+          "yaw",
+          "angular_velocity",
+          "linear_acceleration"
+        ],
+        "title": "Imu",
+        "description": "Z /imu/data (sensor_msgs/Imu)."
+      },
+      "Joints": {
+        "properties": {
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Names",
+            "description": "Stala kolejnosc ze stocku Lite3: LF_Joint, LF_Joint_1, LF_Joint_2, RF_Joint, RF_Joint_1, RF_Joint_2, LB_Joint, LB_Joint_1, LB_Joint_2, RB_Joint, RB_Joint_1, RB_Joint_2"
+          },
+          "position": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "maxItems": 12,
+            "minItems": 12,
+            "title": "Position",
+            "description": "Kat stawu; rad wg konwencji sensor_msgs/JointState (stock nie konwertuje, znak odwrocony wzgledem UDP)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "names",
+          "position"
+        ],
+        "title": "Joints",
+        "description": "Z /joint_states (sensor_msgs/JointState). 12 stawow w stalej kolejnosci."
+      },
+      "Odometry": {
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/Vec3",
+            "description": "Pozycja w ukladzie odom [m]"
+          },
+          "yaw": {
+            "type": "number",
+            "title": "Yaw",
+            "description": "Kurs [rad]"
+          },
+          "velocity_body": {
+            "$ref": "#/components/schemas/Vec3",
+            "description": "Predkosc w ukladzie ciala: x do przodu, y w lewo (vel_body ze stocku, m/s wg konwencji); z = 0"
+          },
+          "yaw_rate": {
+            "type": "number",
+            "title": "Yaw Rate",
+            "description": "Predkosc obrotu (rpy_vel[2] ze stocku, rad/s wg konwencji)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "position",
+          "yaw",
+          "velocity_body",
+          "yaw_rate"
+        ],
+        "title": "Odometry",
+        "description": "Z /leg_odom2 (nav_msgs/Odometry) - odometria z nog, uklad 'odom'."
+      },
+      "Ptz": {
+        "properties": {
+          "state": {
+            "$ref": "#/components/schemas/PtzState"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "title": "Ptz",
+        "description": "Z /ptz/status (std_msgs/String), zdekodowany. IP glowicy (adres w sieci\nrobota) jest pomijane - nie wystawiamy go publicznie."
+      },
+      "PtzState": {
+        "type": "string",
+        "enum": [
+          "MOVING",
+          "WAITING",
+          "DISCONNECTED",
+          "UNKNOWN"
+        ],
+        "title": "PtzState"
+      },
+      "Quaternion": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "title": "Y"
+          },
+          "z": {
+            "type": "number",
+            "title": "Z"
+          },
+          "w": {
+            "type": "number",
+            "title": "W"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "z",
+          "w"
+        ],
+        "title": "Quaternion"
+      },
+      "RobotList": {
+        "properties": {
+          "robots": {
+            "items": {
+              "$ref": "#/components/schemas/RobotSummary"
+            },
+            "type": "array",
+            "title": "Robots"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "robots"
+        ],
+        "title": "RobotList"
+      },
+      "RobotStatus": {
+        "properties": {
+          "online": {
+            "type": "boolean",
+            "title": "Online",
+            "description": "rosbridge polaczony i ostatnia wiadomosc ROS w ciagu STALE_AFTER_S (domyslnie 5 s); GPS/MQTT sie nie liczy"
+          },
+          "last_seen": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Seen",
+            "description": "epoch [s] ostatniej wiadomosci ROS; null, dopoki zadna nie przyszla"
+          },
+          "rosbridge_connected": {
+            "type": "boolean",
+            "title": "Rosbridge Connected",
+            "description": "WebSocket do rosbridge otwarty"
+          },
+          "mqtt_connected": {
+            "type": "boolean",
+            "title": "Mqtt Connected",
+            "description": "Polaczenie z brokerem MQTT (GPS)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "online",
+          "last_seen",
+          "rosbridge_connected",
+          "mqtt_connected"
+        ],
+        "title": "RobotStatus",
+        "description": "Stan robota i polaczen gatewaya. Na WS jako zdarzenie `status`: od razu przy zmianie\nonline / rosbridge_connected / mqtt_connected i jako heartbeat co WS_HEARTBEAT_S (domyslnie 5 s)."
+      },
+      "RobotSummary": {
+        "properties": {
+          "robot_id": {
+            "type": "string",
+            "title": "Robot Id"
+          },
+          "model": {
+            "type": "string",
+            "title": "Model",
+            "examples": [
+              "DEEP Robotics Lite3 Venture"
+            ]
+          },
+          "online": {
+            "type": "boolean",
+            "title": "Online",
+            "description": "True, gdy rosbridge polaczony i ostatnia wiadomosc ROS przyszla w ciagu STALE_AFTER_S; GPS/MQTT sie nie liczy"
+          },
+          "last_seen": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Seen",
+            "description": "epoch [s] ostatniej wiadomosci ROS"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "robot_id",
+          "model",
+          "online"
+        ],
+        "title": "RobotSummary"
+      },
+      "SensorsAlive": {
+        "properties": {
+          "imu": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imu"
+          },
+          "odom": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Odom"
+          },
+          "joints": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Joints"
+          },
+          "realsense": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Realsense"
+          },
+          "lidar": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Lidar"
+          },
+          "ultrasound": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultrasound"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "SensorsAlive",
+        "description": "Z /sensor_status/*_isalive (std_msgs/Bool)."
+      },
+      "TelemetrySnapshot": {
+        "properties": {
+          "robot_id": {
+            "type": "string",
+            "title": "Robot Id",
+            "examples": [
+              "cerber-lite3-01"
+            ]
+          },
+          "ts": {
+            "type": "number",
+            "title": "Ts",
+            "description": "Czas zlozenia snapshotu, epoch [s] wg zegara gatewaya"
+          },
+          "imu": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Imu"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "imu_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Imu At",
+            "description": "epoch [s] odbioru ostatniego /imu/data"
+          },
+          "joints": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Joints"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "joints_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Joints At"
+          },
+          "odometry": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Odometry"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "odometry_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Odometry At"
+          },
+          "ultrasound": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultrasound",
+            "description": "Element [1] tablicy ultrasound[2] z RobotState (stock publikuje tylko ten); ktory czujnik i jednostka - do potwierdzenia na robocie"
+          },
+          "ultrasound_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ultrasound At"
+          },
+          "ptz": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Ptz"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ptz_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ptz At"
+          },
+          "gps": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GPSFix"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "gps_at": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gps At"
+          },
+          "sensors_alive": {
+            "$ref": "#/components/schemas/SensorsAlive"
+          },
+          "battery_percent": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 100.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Battery Percent",
+            "description": "Zarezerwowane: stockowy node Lite3 nie publikuje baterii; null dopoki ROS nie doda publishera"
+          },
+          "status": {
+            "$ref": "#/components/schemas/RobotStatus",
+            "description": "Stan w chwili wyslania snapshotu (/telemetry/latest, pierwsza ramka WS)"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "robot_id",
+          "ts"
+        ],
+        "title": "TelemetrySnapshot",
+        "description": "Ostatni znany stan robota. Kazda sekcja jest null, dopoki nie przyjdzie\npierwsza wiadomosc z odpowiedniego zrodla; `*_at` mowi, kiedy ja odebrano."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "Vec3": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "title": "Y"
+          },
+          "z": {
+            "type": "number",
+            "title": "Z"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "z"
+        ],
+        "title": "Vec3"
+      },
+      "VideoStream": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "examples": [
+              "normal_cam",
+              "IR_cam"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "title": "Path",
+            "description": "Sciezka MediaMTX",
+            "examples": [
+              "video/normal_cam"
+            ]
+          },
+          "whep_url": {
+            "type": "string",
+            "title": "Whep Url",
+            "description": "POST SDP offer tutaj (Content-Type: application/sdp). Bezwzgledny, gdy ustawiono MEDIAMTX_BASE; inaczej sciezka wzgledna na tym samym hoscie co API"
+          },
+          "codec": {
+            "type": "string",
+            "title": "Codec",
+            "default": "H264"
+          },
+          "vpn_only": {
+            "type": "boolean",
+            "title": "Vpn Only",
+            "description": "True, gdy proxy/firewall ogranicza /video do VPN (STREAMS_VPN_ONLY); flaga z konfiguracji, nie stan sieci",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "path",
+          "whep_url"
+        ],
+        "title": "VideoStream"
+      },
+      "VideoStreamList": {
+        "properties": {
+          "streams": {
+            "items": {
+              "$ref": "#/components/schemas/VideoStream"
+            },
+            "type": "array",
+            "title": "Streams"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "streams"
+        ],
+        "title": "VideoStreamList"
+      },
+      "TelemetryEventEnvelope": {
+        "additionalProperties": false,
+        "description": "Ramka WebSocket /api/v1/robots/{robot_id}/telemetry/stream (tekst, JSON).\nRozroznianie po polu `type`.",
+        "properties": {
+          "event": {
+            "discriminator": {
+              "mapping": {
+                "gps": "#/components/schemas/GpsEvent",
+                "imu": "#/components/schemas/ImuEvent",
+                "joints": "#/components/schemas/JointsEvent",
+                "odometry": "#/components/schemas/OdometryEvent",
+                "ptz": "#/components/schemas/PtzEvent",
+                "sensors_alive": "#/components/schemas/SensorsAliveEvent",
+                "snapshot": "#/components/schemas/SnapshotEvent",
+                "status": "#/components/schemas/StatusEvent",
+                "ultrasound": "#/components/schemas/UltrasoundEvent"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SnapshotEvent"
+              },
+              {
+                "$ref": "#/components/schemas/ImuEvent"
+              },
+              {
+                "$ref": "#/components/schemas/JointsEvent"
+              },
+              {
+                "$ref": "#/components/schemas/OdometryEvent"
+              },
+              {
+                "$ref": "#/components/schemas/UltrasoundEvent"
+              },
+              {
+                "$ref": "#/components/schemas/PtzEvent"
+              },
+              {
+                "$ref": "#/components/schemas/GpsEvent"
+              },
+              {
+                "$ref": "#/components/schemas/SensorsAliveEvent"
+              },
+              {
+                "$ref": "#/components/schemas/StatusEvent"
+              }
+            ],
+            "title": "Event"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "title": "TelemetryEventEnvelope",
+        "type": "object"
+      },
+      "GpsEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "gps",
+            "default": "gps",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/GPSFix"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "GpsEvent",
+        "type": "object"
+      },
+      "ImuEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "imu",
+            "default": "imu",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "description": "epoch [s] odbioru przez gateway",
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Imu"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "ImuEvent",
+        "type": "object"
+      },
+      "JointsEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "joints",
+            "default": "joints",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Joints"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "JointsEvent",
+        "type": "object"
+      },
+      "OdometryEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "odometry",
+            "default": "odometry",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Odometry"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "OdometryEvent",
+        "type": "object"
+      },
+      "PtzEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "ptz",
+            "default": "ptz",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Ptz"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "PtzEvent",
+        "type": "object"
+      },
+      "SensorsAliveEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "sensors_alive",
+            "default": "sensors_alive",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/SensorsAlive"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "SensorsAliveEvent",
+        "type": "object"
+      },
+      "SnapshotEvent": {
+        "additionalProperties": false,
+        "description": "Pierwsza ramka po podlaczeniu do WebSocketu: pelny stan.",
+        "properties": {
+          "type": {
+            "const": "snapshot",
+            "default": "snapshot",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TelemetrySnapshot"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "SnapshotEvent",
+        "type": "object"
+      },
+      "StatusEvent": {
+        "additionalProperties": false,
+        "description": "Zmiana stanu (online, rosbridge_connected, mqtt_connected) albo heartbeat co WS_HEARTBEAT_S.\nBez throttlingu; klient nie musi odpowiadac.",
+        "properties": {
+          "type": {
+            "const": "status",
+            "default": "status",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "description": "epoch [s] wyslania",
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RobotStatus"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "StatusEvent",
+        "type": "object"
+      },
+      "UltrasoundEvent": {
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "const": "ultrasound",
+            "default": "ultrasound",
+            "title": "Type",
+            "type": "string"
+          },
+          "robot_id": {
+            "title": "Robot Id",
+            "type": "string"
+          },
+          "ts": {
+            "title": "Ts",
+            "type": "number"
+          },
+          "data": {
+            "description": "Element [1] tablicy ultrasound[2]; jednostka do potwierdzenia",
+            "title": "Data",
+            "type": "number"
+          }
+        },
+        "required": [
+          "robot_id",
+          "ts",
+          "data"
+        ],
+        "title": "UltrasoundEvent",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  },
+  "x-websockets": {
+    "/api/v1/robots/{robot_id}/telemetry/stream": {
+      "description": "Strumien zdarzen TelemetryEventEnvelope. Pierwsza ramka = `snapshot` (z polem `status`),\npotem zdarzenia per zrodlo. Throttling per typ (imu, joints, odometry, ultrasound, ptz,\nsensors_alive, gps; nie snapshot i status): najwyzej 1 ramka na WS_THROTTLE_S (domyslnie 1 s).\nPierwsze zdarzenie typu idzie od razu, kolejne w oknie zastepuja sie nawzajem, a ostatnie\nwychodzi na koniec okna - ostatnia wartosc dochodzi zawsze, najpozniej po WS_THROTTLE_S.\nSnapshot (pierwsza ramka, /telemetry/latest) jest aktualizowany kazda wiadomoscia.\nZdarzenie `status` (RobotStatus: online, last_seen, rosbridge_connected, mqtt_connected) bez\nthrottlingu: od razu przy zmianie online / rosbridge_connected / mqtt_connected (offline\nwykrywany najpozniej ~1 s po STALE_AFTER_S bez wiadomosci ROS) i jako heartbeat co\nWS_HEARTBEAT_S (domyslnie 5 s) niezaleznie od aktywnosci klienta; klient nie musi odpowiadac.\nonline = rosbridge polaczony i ostatnia wiadomosc ROS w ciagu STALE_AFTER_S (GPS sie nie liczy).\nRamki od klienta (tekst i binarne, max 4096 B - wieksze -> 1009) sa ignorowane. Zly klucz ->\nzamkniecie kodem 4401, nieznany robot_id -> 4404 (po accept, wiec klient dostaje kod).\nLimit polaczen na robota (MAX_WS_CLIENTS) -> 1013. Brak odpowiedzi na ping WS (protokolu,\nserwer pinguje co 20 s, czeka 20 s na pong) -> 1011; przy WS_THROTTLE_S=1 tak zwykle\njest rozlaczany klient, ktory przestal czytac (po ~40 s). Przepelniona kolejka (100 ramek;\nwyzsze tempo lub WS_THROTTLE_S=0) -> 1008 tylko jesli bufor TCP zdazy sie oproznic w 1 s,\nzwykle zerwanie polaczenia bez ramki close (u klienta 1006).",
+      "query": {
+        "api_key": "string, wymagany"
+      },
+      "closeCodes": {
+        "4401": "zly klucz (po accept)",
+        "4404": "nieznany robot_id (po accept)",
+        "1013": "limit polaczen WS na robota (MAX_WS_CLIENTS) - sprobuj pozniej",
+        "1008": "klient nie odbiera ramek (przepelniona kolejka 100) - rozlaczony; kod dochodzi tylko, gdy bufor TCP zdazy sie oproznic w 1 s, zwykle zerwanie bez ramki close (1006)",
+        "1009": "ramka od klienta wieksza niz 4096 B",
+        "1011": "brak odpowiedzi na ping WS (ping co 20 s, 20 s na pong); przy WS_THROTTLE_S=1 zwykle tak rozlaczany jest klient, ktory przestal czytac (po ~40 s)"
+      },
+      "message": {
+        "$ref": "#/components/schemas/TelemetryEventEnvelope"
+      },
+      "status": {
+        "event": "status",
+        "data": {
+          "$ref": "#/components/schemas/RobotStatus"
+        },
+        "heartbeat_s": 5.0,
+        "on_change": [
+          "online",
+          "rosbridge_connected",
+          "mqtt_connected"
+        ],
+        "throttled": false
+      }
+    }
+  }
+}

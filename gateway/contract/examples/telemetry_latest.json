@@ -1,0 +1,102 @@
+{
+  "robot_id": "cerber-lite3-01",
+  "ts": 1761487391.0,
+  "imu": {
+    "orientation": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0998,
+      "w": 0.995
+    },
+    "roll": 0.0,
+    "pitch": 0.0,
+    "yaw": 0.2,
+    "angular_velocity": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.05
+    },
+    "linear_acceleration": {
+      "x": 0.1,
+      "y": 0.0,
+      "z": 9.81
+    }
+  },
+  "imu_at": 1761487390.996,
+  "joints": {
+    "names": [
+      "LF_Joint",
+      "LF_Joint_1",
+      "LF_Joint_2",
+      "RF_Joint",
+      "RF_Joint_1",
+      "RF_Joint_2",
+      "LB_Joint",
+      "LB_Joint_1",
+      "LB_Joint_2",
+      "RB_Joint",
+      "RB_Joint_1",
+      "RB_Joint_2"
+    ],
+    "position": [
+      0.0,
+      -0.8,
+      1.6,
+      0.0,
+      -0.8,
+      1.6,
+      0.0,
+      -0.8,
+      1.6,
+      0.0,
+      -0.8,
+      1.6
+    ]
+  },
+  "joints_at": 1761487390.99,
+  "odometry": {
+    "position": {
+      "x": 12.4,
+      "y": -3.1,
+      "z": 0.33
+    },
+    "yaw": 0.2,
+    "velocity_body": {
+      "x": 0.5,
+      "y": 0.0,
+      "z": 0.0
+    },
+    "yaw_rate": 0.05
+  },
+  "odometry_at": 1761487390.99,
+  "ultrasound": 1.42,
+  "ultrasound_at": 1761487390.95,
+  "ptz": {
+    "state": "WAITING"
+  },
+  "ptz_at": 1761487390.5,
+  "gps": {
+    "time": "2026-10-26T14:03:11Z",
+    "latitude": 51.107885,
+    "longitude": 17.038538,
+    "altitude": 118.4,
+    "satellites": 9,
+    "fix_quality": 1
+  },
+  "gps_at": 1761487390.0,
+  "sensors_alive": {
+    "imu": true,
+    "odom": true,
+    "joints": true,
+    "realsense": true,
+    "lidar": false,
+    "ultrasound": true
+  },
+  "battery_percent": null,
+  "status": {
+    "online": true,
+    "last_seen": 1761487390.996,
+    "rosbridge_connected": true,
+    "mqtt_connected": true
+  }
+}

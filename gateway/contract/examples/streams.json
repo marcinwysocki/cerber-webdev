@@ -1,0 +1,18 @@
+{
+  "streams": [
+    {
+      "name": "normal_cam",
+      "path": "video/normal_cam",
+      "whep_url": "/video/normal_cam/whep",
+      "codec": "H264",
+      "vpn_only": true
+    },
+    {
+      "name": "IR_cam",
+      "path": "video/IR_cam",
+      "whep_url": "/video/IR_cam/whep",
+      "codec": "H264",
+      "vpn_only": true
+    }
+  ]
+}

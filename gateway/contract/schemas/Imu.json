@@ -1,0 +1,100 @@
+{
+  "$defs": {
+    "Quaternion": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "z": {
+          "title": "Z",
+          "type": "number"
+        },
+        "w": {
+          "title": "W",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z",
+        "w"
+      ],
+      "title": "Quaternion",
+      "type": "object"
+    },
+    "Vec3": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "z": {
+          "title": "Z",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "title": "Vec3",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Z /imu/data (sensor_msgs/Imu).",
+  "properties": {
+    "orientation": {
+      "$ref": "#/$defs/Quaternion",
+      "description": "Orientacja z IMU (kwaternion z RPY motion hosta), frame_id=base_link"
+    },
+    "roll": {
+      "description": "Przechyl [rad], wyliczony z orientation",
+      "title": "Roll",
+      "type": "number"
+    },
+    "pitch": {
+      "description": "Pochylenie [rad]",
+      "title": "Pitch",
+      "type": "number"
+    },
+    "yaw": {
+      "description": "Odchylenie [rad]",
+      "title": "Yaw",
+      "type": "number"
+    },
+    "angular_velocity": {
+      "$ref": "#/$defs/Vec3",
+      "description": "Predkosc katowa; rad/s wg konwencji sensor_msgs/Imu - stockowy node przekazuje surowe wartosci z UDP bez konwersji, jednostka do potwierdzenia na robocie"
+    },
+    "linear_acceleration": {
+      "$ref": "#/$defs/Vec3",
+      "description": "Przyspieszenie liniowe; m/s^2 wg konwencji sensor_msgs/Imu, surowe z UDP, do potwierdzenia"
+    }
+  },
+  "required": [
+    "orientation",
+    "roll",
+    "pitch",
+    "yaw",
+    "angular_velocity",
+    "linear_acceleration"
+  ],
+  "title": "Imu",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/Imu.json"
+}

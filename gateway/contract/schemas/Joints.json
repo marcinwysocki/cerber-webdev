@@ -1,0 +1,34 @@
+{
+  "additionalProperties": false,
+  "description": "Z /joint_states (sensor_msgs/JointState). 12 stawow w stalej kolejnosci.",
+  "properties": {
+    "names": {
+      "description": "Stala kolejnosc ze stocku Lite3: LF_Joint, LF_Joint_1, LF_Joint_2, RF_Joint, RF_Joint_1, RF_Joint_2, LB_Joint, LB_Joint_1, LB_Joint_2, RB_Joint, RB_Joint_1, RB_Joint_2",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 12,
+      "minItems": 12,
+      "title": "Names",
+      "type": "array"
+    },
+    "position": {
+      "description": "Kat stawu; rad wg konwencji sensor_msgs/JointState (stock nie konwertuje, znak odwrocony wzgledem UDP)",
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 12,
+      "minItems": 12,
+      "title": "Position",
+      "type": "array"
+    }
+  },
+  "required": [
+    "names",
+    "position"
+  ],
+  "title": "Joints",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/Joints.json"
+}

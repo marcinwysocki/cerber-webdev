@@ -1,0 +1,58 @@
+{
+  "additionalProperties": false,
+  "description": "Z MQTT cerber/gps/data.",
+  "properties": {
+    "time": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Czas fixu z odbiornika, UTC",
+      "title": "Time"
+    },
+    "latitude": {
+      "description": "Szerokosc [deg]",
+      "title": "Latitude",
+      "type": "number"
+    },
+    "longitude": {
+      "description": "Dlugosc [deg]",
+      "title": "Longitude",
+      "type": "number"
+    },
+    "altitude": {
+      "description": "Wysokosc [m n.p.m.]",
+      "title": "Altitude",
+      "type": "number"
+    },
+    "satellites": {
+      "maximum": 255,
+      "minimum": 0,
+      "title": "Satellites",
+      "type": "integer"
+    },
+    "fix_quality": {
+      "description": "NMEA GGA: 0 brak fixu, 1 GPS, 2 DGPS, 4 RTK fix, 5 RTK float",
+      "minimum": 0,
+      "title": "Fix Quality",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "latitude",
+    "longitude",
+    "altitude",
+    "satellites",
+    "fix_quality"
+  ],
+  "title": "GPSFix",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/GPSFix.json"
+}

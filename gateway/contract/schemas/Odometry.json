@@ -1,0 +1,60 @@
+{
+  "$defs": {
+    "Vec3": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "z": {
+          "title": "Z",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "title": "Vec3",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Z /leg_odom2 (nav_msgs/Odometry) - odometria z nog, uklad 'odom'.",
+  "properties": {
+    "position": {
+      "$ref": "#/$defs/Vec3",
+      "description": "Pozycja w ukladzie odom [m]"
+    },
+    "yaw": {
+      "description": "Kurs [rad]",
+      "title": "Yaw",
+      "type": "number"
+    },
+    "velocity_body": {
+      "$ref": "#/$defs/Vec3",
+      "description": "Predkosc w ukladzie ciala: x do przodu, y w lewo (vel_body ze stocku, m/s wg konwencji); z = 0"
+    },
+    "yaw_rate": {
+      "description": "Predkosc obrotu (rpy_vel[2] ze stocku, rad/s wg konwencji)",
+      "title": "Yaw Rate",
+      "type": "number"
+    }
+  },
+  "required": [
+    "position",
+    "yaw",
+    "velocity_body",
+    "yaw_rate"
+  ],
+  "title": "Odometry",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/Odometry.json"
+}

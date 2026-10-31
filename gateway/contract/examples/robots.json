@@ -1,0 +1,10 @@
+{
+  "robots": [
+    {
+      "robot_id": "cerber-lite3-01",
+      "model": "DEEP Robotics Lite3 Venture",
+      "online": true,
+      "last_seen": 1761487391.0
+    }
+  ]
+}

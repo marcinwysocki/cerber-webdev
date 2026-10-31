@@ -1,0 +1,16 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "detail": {
+      "title": "Detail",
+      "type": "string"
+    }
+  },
+  "required": [
+    "detail"
+  ],
+  "title": "Error",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/Error.json"
+}

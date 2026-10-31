@@ -1,0 +1,876 @@
+{
+  "$defs": {
+    "GPSFix": {
+      "additionalProperties": false,
+      "description": "Z MQTT cerber/gps/data.",
+      "properties": {
+        "time": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Czas fixu z odbiornika, UTC",
+          "title": "Time"
+        },
+        "latitude": {
+          "description": "Szerokosc [deg]",
+          "title": "Latitude",
+          "type": "number"
+        },
+        "longitude": {
+          "description": "Dlugosc [deg]",
+          "title": "Longitude",
+          "type": "number"
+        },
+        "altitude": {
+          "description": "Wysokosc [m n.p.m.]",
+          "title": "Altitude",
+          "type": "number"
+        },
+        "satellites": {
+          "maximum": 255,
+          "minimum": 0,
+          "title": "Satellites",
+          "type": "integer"
+        },
+        "fix_quality": {
+          "description": "NMEA GGA: 0 brak fixu, 1 GPS, 2 DGPS, 4 RTK fix, 5 RTK float",
+          "minimum": 0,
+          "title": "Fix Quality",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude",
+        "altitude",
+        "satellites",
+        "fix_quality"
+      ],
+      "title": "GPSFix",
+      "type": "object"
+    },
+    "GpsEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "gps",
+          "default": "gps",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/GPSFix"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "GpsEvent",
+      "type": "object"
+    },
+    "Imu": {
+      "additionalProperties": false,
+      "description": "Z /imu/data (sensor_msgs/Imu).",
+      "properties": {
+        "orientation": {
+          "$ref": "#/$defs/Quaternion",
+          "description": "Orientacja z IMU (kwaternion z RPY motion hosta), frame_id=base_link"
+        },
+        "roll": {
+          "description": "Przechyl [rad], wyliczony z orientation",
+          "title": "Roll",
+          "type": "number"
+        },
+        "pitch": {
+          "description": "Pochylenie [rad]",
+          "title": "Pitch",
+          "type": "number"
+        },
+        "yaw": {
+          "description": "Odchylenie [rad]",
+          "title": "Yaw",
+          "type": "number"
+        },
+        "angular_velocity": {
+          "$ref": "#/$defs/Vec3",
+          "description": "Predkosc katowa; rad/s wg konwencji sensor_msgs/Imu - stockowy node przekazuje surowe wartosci z UDP bez konwersji, jednostka do potwierdzenia na robocie"
+        },
+        "linear_acceleration": {
+          "$ref": "#/$defs/Vec3",
+          "description": "Przyspieszenie liniowe; m/s^2 wg konwencji sensor_msgs/Imu, surowe z UDP, do potwierdzenia"
+        }
+      },
+      "required": [
+        "orientation",
+        "roll",
+        "pitch",
+        "yaw",
+        "angular_velocity",
+        "linear_acceleration"
+      ],
+      "title": "Imu",
+      "type": "object"
+    },
+    "ImuEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "imu",
+          "default": "imu",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "description": "epoch [s] odbioru przez gateway",
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/Imu"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "ImuEvent",
+      "type": "object"
+    },
+    "Joints": {
+      "additionalProperties": false,
+      "description": "Z /joint_states (sensor_msgs/JointState). 12 stawow w stalej kolejnosci.",
+      "properties": {
+        "names": {
+          "description": "Stala kolejnosc ze stocku Lite3: LF_Joint, LF_Joint_1, LF_Joint_2, RF_Joint, RF_Joint_1, RF_Joint_2, LB_Joint, LB_Joint_1, LB_Joint_2, RB_Joint, RB_Joint_1, RB_Joint_2",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 12,
+          "minItems": 12,
+          "title": "Names",
+          "type": "array"
+        },
+        "position": {
+          "description": "Kat stawu; rad wg konwencji sensor_msgs/JointState (stock nie konwertuje, znak odwrocony wzgledem UDP)",
+          "items": {
+            "type": "number"
+          },
+          "maxItems": 12,
+          "minItems": 12,
+          "title": "Position",
+          "type": "array"
+        }
+      },
+      "required": [
+        "names",
+        "position"
+      ],
+      "title": "Joints",
+      "type": "object"
+    },
+    "JointsEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "joints",
+          "default": "joints",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/Joints"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "JointsEvent",
+      "type": "object"
+    },
+    "Odometry": {
+      "additionalProperties": false,
+      "description": "Z /leg_odom2 (nav_msgs/Odometry) - odometria z nog, uklad 'odom'.",
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/Vec3",
+          "description": "Pozycja w ukladzie odom [m]"
+        },
+        "yaw": {
+          "description": "Kurs [rad]",
+          "title": "Yaw",
+          "type": "number"
+        },
+        "velocity_body": {
+          "$ref": "#/$defs/Vec3",
+          "description": "Predkosc w ukladzie ciala: x do przodu, y w lewo (vel_body ze stocku, m/s wg konwencji); z = 0"
+        },
+        "yaw_rate": {
+          "description": "Predkosc obrotu (rpy_vel[2] ze stocku, rad/s wg konwencji)",
+          "title": "Yaw Rate",
+          "type": "number"
+        }
+      },
+      "required": [
+        "position",
+        "yaw",
+        "velocity_body",
+        "yaw_rate"
+      ],
+      "title": "Odometry",
+      "type": "object"
+    },
+    "OdometryEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "odometry",
+          "default": "odometry",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/Odometry"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "OdometryEvent",
+      "type": "object"
+    },
+    "Ptz": {
+      "additionalProperties": false,
+      "description": "Z /ptz/status (std_msgs/String), zdekodowany. IP glowicy (adres w sieci\nrobota) jest pomijane - nie wystawiamy go publicznie.",
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/PtzState"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "Ptz",
+      "type": "object"
+    },
+    "PtzEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "ptz",
+          "default": "ptz",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/Ptz"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "PtzEvent",
+      "type": "object"
+    },
+    "PtzState": {
+      "enum": [
+        "MOVING",
+        "WAITING",
+        "DISCONNECTED",
+        "UNKNOWN"
+      ],
+      "title": "PtzState",
+      "type": "string"
+    },
+    "Quaternion": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "z": {
+          "title": "Z",
+          "type": "number"
+        },
+        "w": {
+          "title": "W",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z",
+        "w"
+      ],
+      "title": "Quaternion",
+      "type": "object"
+    },
+    "RobotStatus": {
+      "additionalProperties": false,
+      "description": "Stan robota i polaczen gatewaya. Na WS jako zdarzenie `status`: od razu przy zmianie\nonline / rosbridge_connected / mqtt_connected i jako heartbeat co WS_HEARTBEAT_S (domyslnie 5 s).",
+      "properties": {
+        "online": {
+          "description": "rosbridge polaczony i ostatnia wiadomosc ROS w ciagu STALE_AFTER_S (domyslnie 5 s); GPS/MQTT sie nie liczy",
+          "title": "Online",
+          "type": "boolean"
+        },
+        "last_seen": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "epoch [s] ostatniej wiadomosci ROS; null, dopoki zadna nie przyszla",
+          "title": "Last Seen"
+        },
+        "rosbridge_connected": {
+          "description": "WebSocket do rosbridge otwarty",
+          "title": "Rosbridge Connected",
+          "type": "boolean"
+        },
+        "mqtt_connected": {
+          "description": "Polaczenie z brokerem MQTT (GPS)",
+          "title": "Mqtt Connected",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "online",
+        "last_seen",
+        "rosbridge_connected",
+        "mqtt_connected"
+      ],
+      "title": "RobotStatus",
+      "type": "object"
+    },
+    "SensorsAlive": {
+      "additionalProperties": false,
+      "description": "Z /sensor_status/*_isalive (std_msgs/Bool).",
+      "properties": {
+        "imu": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Imu"
+        },
+        "odom": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Odom"
+        },
+        "joints": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Joints"
+        },
+        "realsense": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Realsense"
+        },
+        "lidar": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lidar"
+        },
+        "ultrasound": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ultrasound"
+        }
+      },
+      "title": "SensorsAlive",
+      "type": "object"
+    },
+    "SensorsAliveEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "sensors_alive",
+          "default": "sensors_alive",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/SensorsAlive"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "SensorsAliveEvent",
+      "type": "object"
+    },
+    "SnapshotEvent": {
+      "additionalProperties": false,
+      "description": "Pierwsza ramka po podlaczeniu do WebSocketu: pelny stan.",
+      "properties": {
+        "type": {
+          "const": "snapshot",
+          "default": "snapshot",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/TelemetrySnapshot"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "SnapshotEvent",
+      "type": "object"
+    },
+    "StatusEvent": {
+      "additionalProperties": false,
+      "description": "Zmiana stanu (online, rosbridge_connected, mqtt_connected) albo heartbeat co WS_HEARTBEAT_S.\nBez throttlingu; klient nie musi odpowiadac.",
+      "properties": {
+        "type": {
+          "const": "status",
+          "default": "status",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "description": "epoch [s] wyslania",
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "$ref": "#/$defs/RobotStatus"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "StatusEvent",
+      "type": "object"
+    },
+    "TelemetrySnapshot": {
+      "additionalProperties": false,
+      "description": "Ostatni znany stan robota. Kazda sekcja jest null, dopoki nie przyjdzie\npierwsza wiadomosc z odpowiedniego zrodla; `*_at` mowi, kiedy ja odebrano.",
+      "properties": {
+        "robot_id": {
+          "examples": [
+            "cerber-lite3-01"
+          ],
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "description": "Czas zlozenia snapshotu, epoch [s] wg zegara gatewaya",
+          "title": "Ts",
+          "type": "number"
+        },
+        "imu": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Imu"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "imu_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "epoch [s] odbioru ostatniego /imu/data",
+          "title": "Imu At"
+        },
+        "joints": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Joints"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "joints_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Joints At"
+        },
+        "odometry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Odometry"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "odometry_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Odometry At"
+        },
+        "ultrasound": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Element [1] tablicy ultrasound[2] z RobotState (stock publikuje tylko ten); ktory czujnik i jednostka - do potwierdzenia na robocie",
+          "title": "Ultrasound"
+        },
+        "ultrasound_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ultrasound At"
+        },
+        "ptz": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ptz"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ptz_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ptz At"
+        },
+        "gps": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GPSFix"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "gps_at": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gps At"
+        },
+        "sensors_alive": {
+          "$ref": "#/$defs/SensorsAlive"
+        },
+        "battery_percent": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Zarezerwowane: stockowy node Lite3 nie publikuje baterii; null dopoki ROS nie doda publishera",
+          "title": "Battery Percent"
+        },
+        "status": {
+          "$ref": "#/$defs/RobotStatus",
+          "description": "Stan w chwili wyslania snapshotu (/telemetry/latest, pierwsza ramka WS)"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts"
+      ],
+      "title": "TelemetrySnapshot",
+      "type": "object"
+    },
+    "UltrasoundEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "ultrasound",
+          "default": "ultrasound",
+          "title": "Type",
+          "type": "string"
+        },
+        "robot_id": {
+          "title": "Robot Id",
+          "type": "string"
+        },
+        "ts": {
+          "title": "Ts",
+          "type": "number"
+        },
+        "data": {
+          "description": "Element [1] tablicy ultrasound[2]; jednostka do potwierdzenia",
+          "title": "Data",
+          "type": "number"
+        }
+      },
+      "required": [
+        "robot_id",
+        "ts",
+        "data"
+      ],
+      "title": "UltrasoundEvent",
+      "type": "object"
+    },
+    "Vec3": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "z": {
+          "title": "Z",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "title": "Vec3",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Ramka WebSocket /api/v1/robots/{robot_id}/telemetry/stream (tekst, JSON).\nRozroznianie po polu `type`.",
+  "properties": {
+    "event": {
+      "discriminator": {
+        "mapping": {
+          "gps": "#/$defs/GpsEvent",
+          "imu": "#/$defs/ImuEvent",
+          "joints": "#/$defs/JointsEvent",
+          "odometry": "#/$defs/OdometryEvent",
+          "ptz": "#/$defs/PtzEvent",
+          "sensors_alive": "#/$defs/SensorsAliveEvent",
+          "snapshot": "#/$defs/SnapshotEvent",
+          "status": "#/$defs/StatusEvent",
+          "ultrasound": "#/$defs/UltrasoundEvent"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/SnapshotEvent"
+        },
+        {
+          "$ref": "#/$defs/ImuEvent"
+        },
+        {
+          "$ref": "#/$defs/JointsEvent"
+        },
+        {
+          "$ref": "#/$defs/OdometryEvent"
+        },
+        {
+          "$ref": "#/$defs/UltrasoundEvent"
+        },
+        {
+          "$ref": "#/$defs/PtzEvent"
+        },
+        {
+          "$ref": "#/$defs/GpsEvent"
+        },
+        {
+          "$ref": "#/$defs/SensorsAliveEvent"
+        },
+        {
+          "$ref": "#/$defs/StatusEvent"
+        }
+      ],
+      "title": "Event"
+    }
+  },
+  "required": [
+    "event"
+  ],
+  "title": "TelemetryEventEnvelope",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/TelemetryEventEnvelope.json"
+}

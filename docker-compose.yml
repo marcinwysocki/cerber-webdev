@@ -33,6 +33,20 @@ services:
     depends_on:
       - influxdb
     restart: always
+  gateway:
+    build: ./gateway
+    container_name: ${PROJECT_NAME}-gateway
+    environment:
+      - API_KEY=${GATEWAY_API_KEY}
+      - ROSBRIDGE_HOST=${ROSBRIDGE_HOST:-10.13.13.2}
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      # baza adresow WHEP w /streams; pusta = sciezki wzgledne (/video/<cam>/whep) na tym samym hoscie co API
+      - MEDIAMTX_BASE=${MEDIAMTX_BASE:-}
+      - STREAMS_VPN_ONLY=${STREAMS_VPN_ONLY:-1}
+    depends_on:
+      - mosquitto
+    restart: always
   frontend:
     build: ./frontend
     container_name: ${PROJECT_NAME}-frontend

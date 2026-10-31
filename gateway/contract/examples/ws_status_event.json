@@ -1,0 +1,13 @@
+{
+  "event": {
+    "type": "status",
+    "robot_id": "cerber-lite3-01",
+    "ts": 1761487391.0,
+    "data": {
+      "online": true,
+      "last_seen": 1761487390.996,
+      "rosbridge_connected": true,
+      "mqtt_connected": true
+    }
+  }
+}

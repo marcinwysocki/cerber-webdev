@@ -1,0 +1,40 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "enum": [
+        "ok",
+        "degraded"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "version": {
+      "default": "1.0.0",
+      "title": "Version",
+      "type": "string"
+    },
+    "rosbridge_connected": {
+      "title": "Rosbridge Connected",
+      "type": "boolean"
+    },
+    "mqtt_connected": {
+      "title": "Mqtt Connected",
+      "type": "boolean"
+    },
+    "ts": {
+      "title": "Ts",
+      "type": "number"
+    }
+  },
+  "required": [
+    "status",
+    "rosbridge_connected",
+    "mqtt_connected",
+    "ts"
+  ],
+  "title": "Health",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/Health.json"
+}

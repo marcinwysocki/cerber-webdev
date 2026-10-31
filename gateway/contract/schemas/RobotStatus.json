@@ -1,0 +1,43 @@
+{
+  "additionalProperties": false,
+  "description": "Stan robota i polaczen gatewaya. Na WS jako zdarzenie `status`: od razu przy zmianie\nonline / rosbridge_connected / mqtt_connected i jako heartbeat co WS_HEARTBEAT_S (domyslnie 5 s).",
+  "properties": {
+    "online": {
+      "description": "rosbridge polaczony i ostatnia wiadomosc ROS w ciagu STALE_AFTER_S (domyslnie 5 s); GPS/MQTT sie nie liczy",
+      "title": "Online",
+      "type": "boolean"
+    },
+    "last_seen": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "epoch [s] ostatniej wiadomosci ROS; null, dopoki zadna nie przyszla",
+      "title": "Last Seen"
+    },
+    "rosbridge_connected": {
+      "description": "WebSocket do rosbridge otwarty",
+      "title": "Rosbridge Connected",
+      "type": "boolean"
+    },
+    "mqtt_connected": {
+      "description": "Polaczenie z brokerem MQTT (GPS)",
+      "title": "Mqtt Connected",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "online",
+    "last_seen",
+    "rosbridge_connected",
+    "mqtt_connected"
+  ],
+  "title": "RobotStatus",
+  "type": "object",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cerber.konar.pwr.edu.pl/schemas/RobotStatus.json"
+}

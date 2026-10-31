@@ -1,0 +1,15 @@
+{
+  "event": {
+    "type": "gps",
+    "robot_id": "cerber-lite3-01",
+    "ts": 1761487391.0,
+    "data": {
+      "time": "2026-10-26T14:03:11Z",
+      "latitude": 51.107885,
+      "longitude": 17.038538,
+      "altitude": 118.4,
+      "satellites": 9,
+      "fix_quality": 1
+    }
+  }
+}

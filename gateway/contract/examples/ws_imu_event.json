@@ -1,0 +1,28 @@
+{
+  "event": {
+    "type": "imu",
+    "robot_id": "cerber-lite3-01",
+    "ts": 1761487391.0,
+    "data": {
+      "orientation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0998,
+        "w": 0.995
+      },
+      "roll": 0.0,
+      "pitch": 0.0,
+      "yaw": 0.2,
+      "angular_velocity": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.05
+      },
+      "linear_acceleration": {
+        "x": 0.1,
+        "y": 0.0,
+        "z": 9.81
+      }
+    }
+  }
+}
