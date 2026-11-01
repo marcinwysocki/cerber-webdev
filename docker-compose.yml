@@ -46,6 +46,8 @@ services:
       - INFLUXDB_ORG=KoNaR
       - MQTT_HOST=mosquitto
       - MQTT_PORT=1883
+      # adres rosbridge robota (VPN); bez tego backend probuje localhost i /api/v1/ros/* zostaje na false
+      - ROSBRIDGE_HOST=${ROSBRIDGE_HOST}
     depends_on:
       - influxdb
     restart: always
