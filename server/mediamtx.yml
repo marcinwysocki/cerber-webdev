@@ -55,7 +55,15 @@ authInternalUsers:
     permissions:
       - action: publish
         path: video/dji01
-  # 3: API/metryki tylko z localhost (jak w konfiguracji domyslnej; API i tak wylaczone).
+  # 3: strumienie demo: ffmpeg uruchamiany przez MediaMTX (runOnInit) publikuje z localhost,
+  #    tylko na sciezki */demo. Z zewnatrz publikowanie na nie jest odrzucane.
+  - user: any
+    pass:
+    ips: ["127.0.0.1", "::1"]
+    permissions:
+      - action: publish
+        path: '~^video/[^/]+/demo$'
+  # 4: API/metryki tylko z localhost (jak w konfiguracji domyslnej; API i tak wylaczone).
   - user: any
     pass:
     ips: ["127.0.0.1", "::1"]
@@ -72,3 +80,15 @@ paths:
   # Dron DJI Mavic 3M: rtmp://<host>:1935/video/dji01?user=<login>&pass=<haslo>
   video/dji01:
     source: publisher
+
+  # Demo: obraz generowany w kontenerze (server/mediamtx-demo.sh), do pokazow bez sprzetu.
+  # Odtwarzanie jak kazdej innej sciezki: /video/<kamera>/demo/ (odtwarzacz) albo POST /video/<kamera>/demo/whep.
+  # Plik /media/<kamera>.mp4 (katalog server/media) zastepuje obraz testowy nagraniem w petli.
+  video/dji01/demo:
+    source: publisher
+    runOnInit: /demo.sh
+    runOnInitRestart: yes
+  video/normal_cam/demo:
+    source: publisher
+    runOnInit: /demo.sh
+    runOnInitRestart: yes

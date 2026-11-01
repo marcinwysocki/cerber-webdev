@@ -15,6 +15,7 @@ dron DJI        --RTMP :1935 (internet, login+hasło)-->          --RTSP :8554 (
 | `video/normal_cam` | robot | SRT | bez hasła; port SRT jest dostępny tylko z VPN (firewall serwera) |
 | `video/IR_cam` | robot | SRT | jak wyżej |
 | `video/dji01` | dron DJI Mavic 3M (operator w terenie) | RTMP | login i hasło z `.env` |
+| `video/dji01/demo`, `video/normal_cam/demo` | ffmpeg w kontenerze (`mediamtx-demo.sh`, `runOnInit`) | SRT z localhost | tylko z wnętrza kontenera; z zewnątrz odrzucane |
 
 Odczyt każdej ścieżki jest publiczny (decyzja z 2026-10-31, jak telemetria): przeglądarka nie potrafi trzymać
 sekretu, a adresy i tak są w bundlu frontendu. Prefiks `video/` jest wspólny, bo reverse proxy kieruje `/video/*`
@@ -35,6 +36,19 @@ Dla hosta `cerber.example.org` (przykład) i domyślnych portów:
 Login i hasło idą w query RTMP, bo aplikacja DJI ma jedno pole na adres. MediaMTX nie loguje query, więc hasło
 nie trafia do `docker logs`. Nie przesyłaj tego adresu kanałem, który zostaje w historii (np. publiczny czat).
 
+## Strumienie demo
+
+Do pokazów bez sprzętu. Każda ścieżka `video/<kamera>/demo` ma własny proces ffmpeg uruchamiany przez MediaMTX
+przy starcie (`runOnInit`, restartowany po awarii). Źródło wybiera `mediamtx-demo.sh`:
+
+- jeśli istnieje `server/media/<kamera>.mp4` (np. `server/media/dji01.mp4`), leci w pętli jako nagranie;
+- inaczej obraz testowy (inny wzór dla każdej ścieżki), bez dźwięku.
+
+Odtwarzanie jak każdej innej ścieżki: `https://<host>/video/dji01/demo/` albo `POST /video/dji01/demo/whep`.
+Pliki w `server/media/` nie trafiają do repo (`.gitignore`); na serwer wgrywa się je ręcznie. Wymaga obrazu
+`bluenviron/mediamtx:latest-ffmpeg`. `DEMO_STREAMS=no` w `.env` wyłącza demo bez zmiany konfiguracji
+(procesy tylko śpią). Koszt: jeden enkoder 720p na ścieżkę, ciągle.
+
 ## Zmienne w `.env`
 
 | Zmienna | Znaczenie | Domyślnie |
@@ -44,6 +58,7 @@ nie trafia do `docker logs`. Nie przesyłaj tego adresu kanałem, który zostaje
 | `RTMP_PORT` | port RTMP na hoście | `1935` |
 | `RTSP_ENABLE` | `yes` włącza nasłuch RTSP (odczyt, tylko TCP) | `no` |
 | `RTSP_PORT` | port RTSP na hoście; mapowany zawsze, ale przy `RTSP_ENABLE=no` nic w kontenerze nie słucha | `18554` |
+| `DEMO_STREAMS` | `no` wyłącza strumienie `video/*/demo` | `yes` |
 
 Hasło: coś losowego, np. `openssl rand -base64 24`. Wartości w `mediamtx.yml` (`dji` / `set-in-env`) to zaślepki,
 które nadpisuje compose; sprawdzono, że bez nadpisania strumień z tym hasłem jest odrzucany.

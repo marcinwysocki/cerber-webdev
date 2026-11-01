@@ -1,6 +1,7 @@
 services:
   mediamtx:
-    image: bluenviron/mediamtx:latest
+    # wariant z ffmpeg: potrzebny do strumieni demo (runOnInit w server/mediamtx.yml)
+    image: bluenviron/mediamtx:latest-ffmpeg
     container_name: ${PROJECT_NAME}-mediamtx
     ports:
       - ${SRT_PORT}:8890/udp
@@ -22,8 +23,12 @@ services:
       - MTX_AUTHINTERNALUSERS_2_PASS=${DJI_PUBLISH_PASS:?set DJI_PUBLISH_PASS in .env}
       # wyjscie RTSP (yes/no)
       - MTX_RTSP=${RTSP_ENABLE:-no}
+      # strumienie demo (video/*/demo): yes/no
+      - DEMO_STREAMS=${DEMO_STREAMS:-yes}
     volumes:
       - ./server/mediamtx.yml:/mediamtx.yml
+      - ./server/mediamtx-demo.sh:/demo.sh:ro
+      - ./server/media:/media:ro
     restart: always
   mosquitto:
     image: eclipse-mosquitto:latest
