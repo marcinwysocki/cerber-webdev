@@ -8,11 +8,20 @@ services:
       # ICE 1:1 (UDP i TCP): MediaMTX oglasza klientom port, na ktorym nasluchuje
       - ${STREAM_PORT}:${STREAM_PORT}/udp
       - ${STREAM_PORT}:${STREAM_PORT}/tcp
+      # RTMP od drona DJI (z internetu, z haslem); port trzeba tez otworzyc w firewallu serwera
+      - ${RTMP_PORT:-1935}:1935
+      # RTSP (diagnostyka, tylko TCP); nasluch wlacza RTSP_ENABLE=yes, bez tego polaczenia sa odrzucane
+      - ${RTSP_PORT:-18554}:8554
     environment:
       - MTX_WEBRTCLOCALUDPADDRESS=:${STREAM_PORT}
       - MTX_WEBRTCLOCALTCPADDRESS=:${STREAM_PORT}
       # publiczny adres (IP lub nazwa) serwera dla kandydatow ICE; lista po przecinku
       - MTX_WEBRTCADDITIONALHOSTS=${WEBRTC_ADDITIONAL_HOSTS}
+      # login i haslo nadawcy drona (wpis nr 2 w authInternalUsers w server/mediamtx.yml); oba wymagane
+      - MTX_AUTHINTERNALUSERS_2_USER=${DJI_PUBLISH_USER:?set DJI_PUBLISH_USER in .env}
+      - MTX_AUTHINTERNALUSERS_2_PASS=${DJI_PUBLISH_PASS:?set DJI_PUBLISH_PASS in .env}
+      # wyjscie RTSP (yes/no)
+      - MTX_RTSP=${RTSP_ENABLE:-no}
     volumes:
       - ./server/mediamtx.yml:/mediamtx.yml
     restart: always

@@ -1,8 +1,18 @@
-# MediaMTX: wejscie SRT od robota (tylko przez VPN), wyjscie WebRTC/WHEP dla przegladarek (za reverse proxy).
+# MediaMTX: wejscia od nadawcow, wyjscie WebRTC/WHEP dla przegladarek (za reverse proxy, trasa /video/*).
+#  - SRT (:8890)  : kamery robota; port dostepny tylko z VPN (firewall), publikowanie bez hasla.
+#  - RTMP (:1935) : dron DJI z internetu; publikowanie wymaga loginu i hasla z .env (patrz authInternalUsers).
+#  - RTSP (:8554) : opcjonalne wyjscie diagnostyczne (ffplay/VLC), domyslnie wylaczone; wlacza .env przez MTX_RTSP.
 # Nieuzywane protokoly wylaczone, zeby kontener nie nasluchiwal na zbednych portach.
-rtsp: no
-rtmp: no
 hls: no
+moq: no
+
+rtsp: no
+# Tylko TCP: RTP/RTCP po UDP wymagaloby dodatkowych portow w compose i firewallu.
+rtspTransports: [tcp]
+rtspAddress: :8554
+
+rtmp: yes
+rtmpAddress: :1935
 
 webrtc: yes
 webrtcAddress: :8889
@@ -19,8 +29,46 @@ webrtcAdditionalHosts: []
 srt: yes
 srtAddress: :8890
 
+# Uprawnienia. Kolejnosc wpisow ma znaczenie dla nadpisan z .env (MTX_AUTHINTERNALUSERS_<indeks>_...).
+authMethod: internal
+authInternalUsers:
+  # 0: odczyt publiczny (decyzja z 2026-10-31: odtwarzanie bez logowania, jak telemetria).
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: read
+      - action: playback
+  # 1: publikowanie bez hasla tylko na kamery robota (SRT, wejscie osiagalne wylacznie z VPN).
+  - user: any
+    pass:
+    ips: []
+    permissions:
+      - action: publish
+        path: '~^video/(normal_cam|IR_cam)$'
+  # 2: nadawca drona (RTMP z internetu). Login i haslo ustawia .env przez
+  #    MTX_AUTHINTERNALUSERS_2_USER / MTX_AUTHINTERNALUSERS_2_PASS (docker-compose wymaga obu).
+  #    Wartosci ponizej to tylko zaslepki, kontener bez nadpisania nie przyjmie strumienia.
+  - user: dji
+    pass: set-in-env
+    ips: []
+    permissions:
+      - action: publish
+        path: video/dji01
+  # 3: API/metryki tylko z localhost (jak w konfiguracji domyslnej; API i tak wylaczone).
+  - user: any
+    pass:
+    ips: ["127.0.0.1", "::1"]
+    permissions:
+      - action: api
+      - action: metrics
+      - action: pprof
+
 paths:
   video/normal_cam:
     source: publisher
   video/IR_cam:
+    source: publisher
+  # Dron DJI Mavic 3M: rtmp://<host>:1935/video/dji01?user=<login>&pass=<haslo>
+  video/dji01:
     source: publisher
